@@ -21,7 +21,7 @@ class TestHelloWorldHandler(unittest.TestCase):
         handler.do_GET()
 
         handler.send_response.assert_called_once_with(200)
-        handler.wfile.write.assert_called_once_with(b"Hello World")
+        handler.wfile.write.assert_called_once_with(b"Hello Streaver!!")
 
 
 class TestHealthCheckHandler(unittest.TestCase):
