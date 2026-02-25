@@ -1,4 +1,4 @@
-name: Canary Deployment
+name: App Deployment - Canary
 
 on:
   workflow_dispatch:

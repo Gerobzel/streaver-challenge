@@ -53,7 +53,7 @@ resource "aws_cloudwatch_event_rule" "circuit_breaker" {
   event_pattern = jsonencode({
     source        = ["aws.ecs"]
     "detail-type" = ["ECS Deployment State Change"]
-    resources     = ["arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${var.cluster_name}/${each.value.service_name}"]
+    resources     = ["arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${var.cluster_name}/${each.value.service_name}"]
     detail = {
       eventName = ["SERVICE_DEPLOYMENT_FAILED"]
       reason    = [{ prefix = "ECS deployment circuit breaker" }]
