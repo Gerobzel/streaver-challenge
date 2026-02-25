@@ -1,6 +1,6 @@
 project     = "streaver-ch"
 domain_name = "grobert-streaver.com"
-alert_email = "your-email@example.com"
+alert_email = "gerobzel@gmail.com"
 
 # Traffic routing — standard canary progression: 10/90 → 50/50 → 100/0 (promote)
 image_tag_stable = "latest"

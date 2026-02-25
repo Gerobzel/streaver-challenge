@@ -55,7 +55,6 @@ jobs:
       - name: Terraform Apply
         working-directory: ${{ env.TF_WORKING_DIR }}
         env:
-          TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
           TF_VAR_image_tag_stable: ${{ inputs.stable_image_tag }}
           TF_VAR_weight_stable: ${{ inputs.stable_weight }}
           TF_VAR_image_tag_canary: ${{ inputs.canary_image_tag }}
