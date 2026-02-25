@@ -71,17 +71,6 @@ canary_image_tag=abc1234 canary_weight=0   <- canary scales to zero
 
 **Rollback** — set `canary_weight=0` at any point to drain canary traffic and scale it down.
 
-## Running locally
-
-```bash
-# Tests
-cd apps/hello-world
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-
-# Pre-commit hooks
-pip install pre-commit && pre-commit install
-```
-
 ## Deploy order
 
 1. Apply `terraform/shared-infra` (VPCs, cluster, ECR)
