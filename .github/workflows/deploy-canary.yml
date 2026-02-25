@@ -1,0 +1,88 @@
+name: Canary Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      stable_image_tag:
+        description: "Stable image tag (e.g. abc1234 or latest)"
+        required: true
+        default: "latest"
+      stable_weight:
+        description: "Traffic weight for stable — progression: 90 → 50 → 100"
+        required: true
+        default: "100"
+      canary_image_tag:
+        description: "Canary image tag (e.g. abc1234)"
+        required: true
+        default: "latest"
+      canary_weight:
+        description: "Traffic weight for canary — progression: 10 → 50 → 0 (after promote)"
+        required: true
+        default: "0"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_VERSION: "1.7.0"
+  AWS_REGION: "us-east-1"
+  TF_WORKING_DIR: terraform/app-infra
+  CLUSTER_NAME: "streaver-ch-cluster"
+
+jobs:
+  deploy:
+    name: "Deploy (stable ${{ inputs.stable_weight }}% / canary ${{ inputs.canary_weight }}%)"
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
+          TF_VAR_image_tag_stable: ${{ inputs.stable_image_tag }}
+          TF_VAR_weight_stable: ${{ inputs.stable_weight }}
+          TF_VAR_image_tag_canary: ${{ inputs.canary_image_tag }}
+          TF_VAR_weight_canary: ${{ inputs.canary_weight }}
+        run: terraform apply -auto-approve -input=false
+
+      - name: Wait for ECS services to stabilize
+        run: |
+          echo "Waiting for hello-world-stable..."
+          aws ecs wait services-stable \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services streaver-ch-hello-world-stable \
+            --region ${{ env.AWS_REGION }}
+
+          # Only wait for canary if it has tasks running
+          if [ "${{ inputs.canary_weight }}" != "0" ]; then
+            echo "Waiting for hello-world-canary..."
+            aws ecs wait services-stable \
+              --cluster ${{ env.CLUSTER_NAME }} \
+              --services streaver-ch-hello-world-canary \
+              --region ${{ env.AWS_REGION }}
+          fi
+
+      - name: Deployment summary
+        run: |
+          echo "## Canary Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Image Tag | Traffic |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-----------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| stable  | \`${{ inputs.stable_image_tag }}\` | ${{ inputs.stable_weight }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| canary  | \`${{ inputs.canary_image_tag }}\` | ${{ inputs.canary_weight }} |" >> $GITHUB_STEP_SUMMARY
