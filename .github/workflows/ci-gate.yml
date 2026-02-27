@@ -1,0 +1,11 @@
+name: CI Gate
+
+on:
+  pull_request:
+
+jobs:
+  ci-passed:
+    name: CI Passed
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No path-specific CI required for this change"
