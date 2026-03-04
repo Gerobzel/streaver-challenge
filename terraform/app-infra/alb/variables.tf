@@ -22,15 +22,3 @@ variable "domain_name" {
   description = "External domain name registered in the SSL certificate."
   type        = string
 }
-
-variable "weight_stable" {
-  description = "ALB traffic weight for the stable target group (0–100)."
-  type        = number
-  default     = 100
-}
-
-variable "weight_canary" {
-  description = "ALB traffic weight for the canary target group (0–100)."
-  type        = number
-  default     = 0
-}

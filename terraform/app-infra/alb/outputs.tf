@@ -13,12 +13,27 @@ output "alb_zone_id" {
   value       = aws_lb.main.zone_id
 }
 
-output "target_group_arn_stable" {
-  description = "ARN of the stable target group."
-  value       = aws_lb_target_group.stable.arn
+output "listener_arn" {
+  description = "ARN of the HTTPS production listener (used by CodeDeploy deployment group)."
+  value       = aws_lb_listener.https.arn
 }
 
-output "target_group_arn_canary" {
-  description = "ARN of the canary target group."
-  value       = aws_lb_target_group.canary.arn
+output "target_group_arn_blue" {
+  description = "ARN of the blue target group."
+  value       = aws_lb_target_group.blue.arn
+}
+
+output "target_group_name_blue" {
+  description = "Name of the blue target group (used by CodeDeploy deployment group)."
+  value       = aws_lb_target_group.blue.name
+}
+
+output "target_group_arn_green" {
+  description = "ARN of the green target group."
+  value       = aws_lb_target_group.green.arn
+}
+
+output "target_group_name_green" {
+  description = "Name of the green target group (used by CodeDeploy deployment group)."
+  value       = aws_lb_target_group.green.name
 }

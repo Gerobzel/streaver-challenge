@@ -42,9 +42,9 @@ resource "aws_lb" "main" {
   }
 }
 
-# Target Group — stable variant
-resource "aws_lb_target_group" "stable" {
-  name        = "${var.project}-stable"
+# Target Group — blue (active/current)
+resource "aws_lb_target_group" "blue" {
+  name        = "${var.project}-blue"
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = var.private_vpc_id
@@ -63,13 +63,13 @@ resource "aws_lb_target_group" "stable" {
   }
 
   tags = {
-    Name = "${var.project}-stable"
+    Name = "${var.project}-blue"
   }
 }
 
-# Target Group — canary variant
-resource "aws_lb_target_group" "canary" {
-  name        = "${var.project}-canary"
+# Target Group — green (new version, CodeDeploy shifts traffic here during deployment)
+resource "aws_lb_target_group" "green" {
+  name        = "${var.project}-green"
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = var.private_vpc_id
@@ -88,11 +88,12 @@ resource "aws_lb_target_group" "canary" {
   }
 
   tags = {
-    Name = "${var.project}-canary"
+    Name = "${var.project}-green"
   }
 }
 
-# HTTPS listener — SSL offload, weighted forward to stable/canary target groups
+# HTTPS listener — CodeDeploy manages traffic shifting between blue and green.
+# Initially forwards to blue; CodeDeploy updates this rule during deployments.
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.main.arn
   port              = 443
@@ -101,18 +102,7 @@ resource "aws_lb_listener" "https" {
   certificate_arn   = aws_acm_certificate.self_signed.arn
 
   default_action {
-    type = "forward"
-
-    forward {
-      target_group {
-        arn    = aws_lb_target_group.stable.arn
-        weight = var.weight_stable
-      }
-
-      target_group {
-        arn    = aws_lb_target_group.canary.arn
-        weight = var.weight_canary
-      }
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.blue.arn
   }
 }
