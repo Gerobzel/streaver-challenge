@@ -47,7 +47,7 @@ resource "aws_lb_target_group" "blue" {
   name        = "${var.project}-blue"
   port        = 8000
   protocol    = "HTTP"
-  vpc_id      = var.private_vpc_id
+  vpc_id      = var.public_vpc_id
   target_type = "ip"
 
   health_check {
@@ -72,7 +72,7 @@ resource "aws_lb_target_group" "green" {
   name        = "${var.project}-green"
   port        = 8000
   protocol    = "HTTP"
-  vpc_id      = var.private_vpc_id
+  vpc_id      = var.public_vpc_id
   target_type = "ip"
 
   health_check {

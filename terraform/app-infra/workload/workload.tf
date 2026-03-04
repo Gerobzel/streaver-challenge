@@ -1,14 +1,5 @@
 data "aws_region" "current" {}
 
-# Service Connect Namespace — one per workload variant, scoped to var.name
-resource "aws_service_discovery_http_namespace" "main" {
-  name = "${var.project}-${var.name}"
-
-  tags = {
-    Name = "${var.project}-${var.name}"
-  }
-}
-
 # CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "main" {
   name              = "/ecs/${var.project}/${var.name}"
@@ -140,18 +131,6 @@ resource "aws_ecs_service" "main" {
     subnets          = var.private_subnet_ids
     security_groups  = [aws_security_group.main.id]
     assign_public_ip = false
-  }
-
-  service_connect_configuration {
-    enabled   = true
-    namespace = aws_service_discovery_http_namespace.main.arn
-
-    service {
-      port_name = "http"
-      client_alias {
-        port = 8000
-      }
-    }
   }
 
   tags = {
