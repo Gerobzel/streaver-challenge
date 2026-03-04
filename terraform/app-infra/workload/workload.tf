@@ -111,16 +111,18 @@ resource "aws_ecs_service" "main" {
   task_definition = aws_ecs_task_definition.main.arn
   desired_count   = var.desired_count
 
-  # Roll back automatically if the new deployment fails health checks repeatedly.
-  deployment_circuit_breaker {
-    enable   = true
-    rollback = true
+  # Deployments are managed by CodeDeploy (blue/green + canary traffic shifting).
+  deployment_controller {
+    type = "CODE_DEPLOY"
   }
 
-  deployment_maximum_percent         = 200
-  deployment_minimum_healthy_percent = 100
-
   health_check_grace_period_seconds = 60
+
+  # Prevent Terraform from fighting CodeDeploy over the active task definition and
+  # target group — CodeDeploy owns those after the first deployment.
+  lifecycle {
+    ignore_changes = [task_definition, load_balancer]
+  }
 
   load_balancer {
     target_group_arn = var.target_group_arn

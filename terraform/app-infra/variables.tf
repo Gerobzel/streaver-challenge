@@ -19,26 +19,8 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "image_tag_stable" {
-  description = "Image tag for the stable ECS service."
+variable "image_tag" {
+  description = "Image tag for the ECS service (managed by CodeDeploy after first deploy)."
   type        = string
   default     = "latest"
-}
-
-variable "image_tag_canary" {
-  description = "Image tag for the canary ECS service."
-  type        = string
-  default     = "latest"
-}
-
-variable "weight_stable" {
-  description = "ALB traffic weight for the stable target group (0–100)."
-  type        = number
-  default     = 100
-}
-
-variable "weight_canary" {
-  description = "ALB traffic weight for the canary target group (0–100)."
-  type        = number
-  default     = 0
 }
