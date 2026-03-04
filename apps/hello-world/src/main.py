@@ -19,7 +19,7 @@ class HelloWorldHandler(BaseHTTPRequestHandler):
 class HealthCheckHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            with socket.create_connection(("localhost", 80), timeout=2):
+            with socket.create_connection(("localhost", 8000), timeout=2):
                 code, body = 200, b"Service Healthy"
         except OSError:
             code, body = 503, b"Service Unavailable"
@@ -34,7 +34,7 @@ class HealthCheckHandler(BaseHTTPRequestHandler):
 
 
 def run_hello_world():
-    HTTPServer(("0.0.0.0", 80), HelloWorldHandler).serve_forever()
+    HTTPServer(("0.0.0.0", 8000), HelloWorldHandler).serve_forever()
 
 
 if __name__ == "__main__":

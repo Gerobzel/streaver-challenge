@@ -4,7 +4,7 @@ A containerized Python service deployed on AWS ECS Fargate, built as part of a t
 
 ## What it does
 
-- Serves `Hello World` on port 80
+- Serves `Hello World` on port 8000
 - Exposes a healthcheck endpoint on port 8080
 - Deployed behind an HTTPS ALB with WAF protection
 - Supports canary deployments via ALB weighted routing
