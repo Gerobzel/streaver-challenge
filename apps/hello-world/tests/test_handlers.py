@@ -25,7 +25,7 @@ class TestHelloWorldHandler(unittest.TestCase):
 
 
 class TestHealthCheckHandler(unittest.TestCase):
-    def test_returns_200_when_port_80_is_reachable(self):
+    def test_returns_200_when_port_8000_is_reachable(self):
         handler = make_handler(HealthCheckHandler)
 
         with patch("main.socket.create_connection"):
@@ -34,13 +34,13 @@ class TestHealthCheckHandler(unittest.TestCase):
         handler.send_response.assert_called_once_with(200)
         handler.wfile.write.assert_called_once_with(b"Service Healthy")
 
-    def test_returns_403_when_port_80_is_unreachable(self):
+    def test_returns_403_when_port_8000_is_unreachable(self):
         handler = make_handler(HealthCheckHandler)
 
         with patch("main.socket.create_connection", side_effect=OSError):
             handler.do_GET()
 
-        handler.send_response.assert_called_once_with(403)
+        handler.send_response.assert_called_once_with(503)
         handler.wfile.write.assert_called_once_with(b"Service Unavailable")
 
 
