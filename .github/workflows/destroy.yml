@@ -20,7 +20,6 @@ permissions:
   contents: read
 
 env:
-  TF_VERSION: "1.7.0"
   AWS_REGION: "us-east-1"
 
 jobs:
@@ -41,6 +40,9 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+
+      - name: Load pipeline env
+        run: grep -v '^#' pipeline.env >> $GITHUB_ENV
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
@@ -68,6 +70,9 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+
+      - name: Load pipeline env
+        run: grep -v '^#' pipeline.env >> $GITHUB_ENV
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
