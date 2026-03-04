@@ -13,11 +13,6 @@ variable "public_subnet_ids" {
   type        = list(string)
 }
 
-variable "private_vpc_id" {
-  description = "ID of the private VPC where ECS tasks run (used for the target group)."
-  type        = string
-}
-
 variable "domain_name" {
   description = "External domain name registered in the SSL certificate."
   type        = string

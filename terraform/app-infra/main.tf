@@ -14,7 +14,6 @@ module "alb" {
   domain_name       = var.domain_name
   public_vpc_id     = data.aws_vpc.public.id
   public_subnet_ids = data.aws_subnets.public.ids
-  private_vpc_id    = data.aws_vpc.private.id
 }
 
 module "waf" {
