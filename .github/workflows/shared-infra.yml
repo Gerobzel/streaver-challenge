@@ -16,7 +16,6 @@ permissions:
   pull-requests: write
 
 env:
-  TF_VERSION: "1.7.0"
   AWS_REGION: "us-east-1"
   TF_WORKING_DIR: terraform/shared-infra
 
@@ -26,6 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Load pipeline env
+        run: grep -v '^#' pipeline.env >> $GITHUB_ENV
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -56,6 +58,9 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Load pipeline env
+        run: grep -v '^#' pipeline.env >> $GITHUB_ENV
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -108,6 +113,9 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Load pipeline env
+        run: grep -v '^#' pipeline.env >> $GITHUB_ENV
 
       - uses: hashicorp/setup-terraform@v3
         with:

@@ -25,7 +25,6 @@ permissions:
   contents: read
 
 env:
-  TF_VERSION: "1.7.0"
   AWS_REGION: "us-east-1"
   TF_WORKING_DIR: terraform/app-infra
   CLUSTER_NAME: "streaver-ch-cluster"
@@ -43,6 +42,9 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Load pipeline env
+        run: grep -v '^#' pipeline.env >> $GITHUB_ENV
 
       - uses: hashicorp/setup-terraform@v3
         with:
