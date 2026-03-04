@@ -45,7 +45,7 @@ resource "aws_lb" "main" {
 # Target Group — stable variant
 resource "aws_lb_target_group" "stable" {
   name        = "${var.project}-stable"
-  port        = 80
+  port        = 8000
   protocol    = "HTTP"
   vpc_id      = var.private_vpc_id
   target_type = "ip"
@@ -53,7 +53,7 @@ resource "aws_lb_target_group" "stable" {
   health_check {
     enabled             = true
     path                = "/"
-    port                = "80"
+    port                = "8000"
     protocol            = "HTTP"
     matcher             = "200"
     interval            = 30
@@ -70,7 +70,7 @@ resource "aws_lb_target_group" "stable" {
 # Target Group — canary variant
 resource "aws_lb_target_group" "canary" {
   name        = "${var.project}-canary"
-  port        = 80
+  port        = 8000
   protocol    = "HTTP"
   vpc_id      = var.private_vpc_id
   target_type = "ip"
@@ -78,7 +78,7 @@ resource "aws_lb_target_group" "canary" {
   health_check {
     enabled             = true
     path                = "/"
-    port                = "80"
+    port                = "8000"
     protocol            = "HTTP"
     matcher             = "200"
     interval            = 30

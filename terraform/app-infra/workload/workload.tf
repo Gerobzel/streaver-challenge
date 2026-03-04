@@ -26,8 +26,8 @@ resource "aws_security_group" "main" {
 
   ingress {
     description = "App port"
-    from_port   = 80
-    to_port     = 80
+    from_port   = 8000
+    to_port     = 8000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -70,7 +70,7 @@ resource "aws_ecs_task_definition" "main" {
       portMappings = [
         {
           name          = "http"
-          containerPort = 80
+          containerPort = 8000
           protocol      = "tcp"
         },
         {
@@ -125,7 +125,7 @@ resource "aws_ecs_service" "main" {
   load_balancer {
     target_group_arn = var.target_group_arn
     container_name   = var.name
-    container_port   = 80
+    container_port   = 8000
   }
 
   capacity_provider_strategy {
@@ -147,7 +147,7 @@ resource "aws_ecs_service" "main" {
     service {
       port_name = "http"
       client_alias {
-        port = 80
+        port = 8000
       }
     }
   }

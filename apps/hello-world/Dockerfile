@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY src/ ./src/
 
-EXPOSE 80
+EXPOSE 8000
 EXPOSE 8080
 
 CMD ["python", "src/main.py"]
